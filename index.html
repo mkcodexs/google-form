@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Sheets Form - GitHub Pages</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Reset & Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+            max-width: 800px;
+        }
+
+        .header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .badges {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 8px 16px;
+            border-radius: 50px;
+            text-decoration: none;
+            color: white;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .badge:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .badge i {
+            margin-right: 8px;
+        }
+
+        /* Main Container */
+        .container {
+            display: flex;
+            gap: 30px;
+            max-width: 1200px;
+            width: 100%;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        /* Form Card */
+        .form-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            flex: 1;
+            min-width: 300px;
+            max-width: 500px;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2d3748;
+            font-size: 0.95rem;
+        }
+
+        .required::after {
+            content: " *";
+            color: #e53e3e;
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #f8fafc;
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: #4299e1;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+        }
+
+        .form-textarea {
+            min-height: 140px;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        /* Submit Button */
+        .submit-btn {
+            background: linear-gradient(to right, #4299e1, #3182ce);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(66, 153, 225, 0.3);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .submit-btn i {
+            margin-right: 10px;
+        }
+
+        /* Info Card */
+        .info-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            flex: 1;
+            min-width: 300px;
+            max-width: 400px;
+        }
+
+        .info-card h3 {
+            color: #2d3748;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .feature-list {
+            list-style: none;
+        }
+
+        .feature-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+        }
+
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+
+        .feature-list i {
+            color: #48bb78;
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+
+        /* Messages */
+        .message {
+            margin-top: 20px;
+            padding: 16px;
+            border-radius: 10px;
+            text-align: center;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .message.success {
+            background: #c6f6d5;
+            color: #22543d;
+            border: 1px solid #9ae6b4;
+        }
+
+        .message.error {
+            background: #fed7d7;
+            color: #742a2a;
+            border: 1px solid #fc8181;
+        }
+
+        .message.info {
+            background: #bee3f8;
+            color: #2a4365;
+            border: 1px solid #90cdf4;
+        }
+
+        /* Status Bar */
+        .status-bar {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            padding: 12px 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .status-bar i {
+            color: #48bb78;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+            max-width: 800px;
+        }
+
+        .footer a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .form-card,
+            .info-card {
+                width: 100%;
+                max-width: 100%;
+            }
+            
+            .header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .status-bar {
+                bottom: 10px;
+                right: 10px;
+                left: 10px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <h1><i class="fas fa-file-alt"></i> Google Sheets Form</h1>
+        <p>Free form hosting with GitHub Pages • Automatic Google Sheets integration</p>
+        <div class="badges">
+            <a href="https://github.com" class="badge" target="_blank">
+                <i class="fab fa-github"></i> GitHub
+            </a>
+            <a href="https://sheets.google.com" class="badge" target="_blank">
+                <i class="fab fa-google"></i> Google Sheets
+            </a>
+            <a href="#" class="badge" id="liveStatus">
+                <i class="fas fa-circle"></i> Status: Loading...
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Form Card -->
+        <div class="form-card">
+            <form id="contactForm">
+                <div class="form-group">
+                    <label for="name" class="form-label required">Full Name</label>
+                    <input type="text" id="name" class="form-input" placeholder="John Doe" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email" class="form-label required">Email Address</label>
+                    <input type="email" id="email" class="form-input" placeholder="john@example.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone" class="form-label">Phone Number</label>
+                    <input type="tel" id="phone" class="form-input" placeholder="(123) 456-7890">
+                </div>
+
+                <div class="form-group">
+                    <label for="subject" class="form-label required">Subject</label>
+                    <select id="subject" class="form-select" required>
+                        <option value="">Choose a subject</option>
+                        <option value="General Inquiry">General Inquiry</option>
+                        <option value="Technical Support">Technical Support</option>
+                        <option value="Feedback">Feedback</option>
+                        <option value="Partnership">Partnership</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="message" class="form-label required">Message</label>
+                    <textarea id="message" class="form-textarea" placeholder="Type your message here..." required></textarea>
+                    <div class="char-counter" style="text-align: right; font-size: 0.85rem; color: #718096; margin-top: 5px;">
+                        <span id="charCount">0</span>/500 characters
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    <i class="fas fa-paper-plane"></i> Submit to Google Sheets
+                </button>
+            </form>
+
+            <div id="messageBox" class="message"></div>
+        </div>
+
+        <!-- Info Card -->
+        <div class="info-card">
+            <h3><i class="fas fa-info-circle"></i> How It Works</h3>
+            <ul class="feature-list">
+                <li><i class="fas fa-check-circle"></i> <strong>Free Hosting:</strong> GitHub Pages</li>
+                <li><i class="fas fa-check-circle"></i> <strong>Database:</strong> Google Sheets</li>
+                <li><i class="fas fa-check-circle"></i> <strong>Security:</strong> No API keys exposed</li>
+                <li><i class="fas fa-check-circle"></i> <strong>Real-time:</strong> Instant sheet updates</li>
+                <li><i class="fas fa-check-circle"></i> <strong>Mobile-friendly:</strong> Responsive design</li>
+                <li><i class="fas fa-check-circle"></i> <strong>No coding:</strong> Easy setup</li>
+            </ul>
+
+            <div style="margin-top: 30px; padding: 20px; background: #f7fafc; border-radius: 10px;">
+                <h4 style="margin-bottom: 10px; color: #2d3748;"><i class="fas fa-chart-line"></i> Stats</h4>
+                <p style="margin-bottom: 5px;">Submissions Today: <strong id="todayCount">0</strong></p>
+                <p>Total Submissions: <strong id="totalCount">0</strong></p>
+            </div>
+
+            <div style="margin-top: 20px; text-align: center;">
+                <a href="#" id="viewSheetBtn" style="display: inline-block; padding: 10px 20px; background: #48bb78; color: white; text-decoration: none; border-radius: 5px; font-weight: 600;">
+                    <i class="fas fa-external-link-alt"></i> View Google Sheet
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Status Bar -->
+    <div class="status-bar" id="statusBar">
+        <i class="fas fa-sync-alt fa-spin"></i>
+        <span>Connecting to Google Sheets...</span>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>Powered by Google Sheets API • Hosted on GitHub Pages • Created with ❤️</p>
+        <p>Form submissions are saved directly to your Google Sheet in real-time.</p>
+        <p style="margin-top: 10px;">
+            <a href="#" onclick="showSetupGuide()"><i class="fas fa-book"></i> Setup Guide</a> • 
+            <a href="#" onclick="showTroubleshooting()"><i class="fas fa-wrench"></i> Troubleshooting</a> • 
+            <a href="https://github.com/yourusername/google-sheets-form" target="_blank"><i class="fas fa-code"></i> Source Code</a>
+        </p>
+    </div>
+
+    <!-- Setup Guide Modal -->
+    <div id="setupModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center;">
+        <div style="background: white; padding: 30px; border-radius: 15px; max-width: 600px; max-height: 80vh; overflow-y: auto;">
+            <h2 style="margin-bottom: 20px;"><i class="fas fa-book"></i> Setup Guide</h2>
+            <div id="setupContent">
+                <!-- Content will be loaded by JavaScript -->
+            </div>
+            <button onclick="hideSetupGuide()" style="margin-top: 20px; padding: 10px 20px; background: #e53e3e; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                Close Guide
+            </button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
